@@ -1,22 +1,25 @@
 #! /usr/bin/env python3
 from GTF import GTF
 
-# Parse gene_counts from bambu in a dict, ex for line:
-# ENSG0000003    25   16   3   0
-# { "ENSG00000003": {
-#     "counts": 44,
-#     "validates" : 3
-#   }
-# }
+
 def parse_gene_counts(file):
+    """
+    Parse gene_counts from bambu in a dict, ex for line:
+    ENSG0000003    25   16   3   0
+    { "ENSG00000003": {
+        "counts": 44,
+        "validates" : 3
+      }
+    }
+    """
     genes = {}
-    samples = file.readline()  # Skip header
+    file.readline()  # Skip header
 
     for line in file:
         line = line.rstrip().split("\t")
-        int_line = [int(count) for count in line[1:]]
+        int_line = [float(count) for count in line[1:]]
 
-        # Compute sum of all sample counts
+        # Total expression over samples
         sum_counts = sum(int_line)
 
         # Number of samples which has counts != 0
@@ -29,9 +32,8 @@ def parse_gene_counts(file):
 
 def get_ref_length(file):
     ref = {}
-    for record in GTF.parse_by_line(file):
-        if record.feature == "gene":
-            ref[record["gene_id"]] = {"start": record.start, "end": record.end}
+    for record in GTF.parse_by_line(file, feature="gene"):
+        ref[record["gene_id"]] = {"start": record.start, "end": record.end}
     return ref
 
 
@@ -44,19 +46,21 @@ def qc_gtf(gtf, gene_counts, ref):
     transcript_str = f"transcript_id,gene_id,transcript_biotype,nb_exons,length,gene_discovery,tx_discovery\n"
     exon_str = "exon_biotype,length,discovery\n"
 
+    biotypes = set(("protein_coding", "lncRNA", "lnc_RNA"))
     for gene in GTF.parse(gtf).values():
-        # Only stats for protein_coding and lncRNA gene
-        if gene["gene_biotype"] not in ("protein_coding", "lncRNA"):
+        if gene["gene_biotype"] not in biotypes:
             continue
 
         g_id = gene["gene_id"]
         g_biotype = gene["gene_biotype"]
         g_status = "novel" if g_id.startswith("gene.") else "known"
         g_count = gene_counts[g_id]["counts"]  # Counts in all samples
-        g_samples = gene_counts[g_id]["validates"]  # Find in x samples
+        g_samples = gene_counts[g_id]["validates"]  # Found in x samples
         g_nb_tx = len(gene.transcripts)  # Number of isoforms
 
         # Compute genomic extension with start/end in ref
+        ext_5 = 0
+        ext_3 = 0
         if not g_id.startswith("gene."):
             if gene.strand == "+":
                 ext_5 = ref_start_end[gene["gene_id"]]["start"] - gene.start
@@ -66,12 +70,7 @@ def qc_gtf(gtf, gene_counts, ref):
                 ext_5 = gene.end - ref_start_end[gene["gene_id"]]["end"]
 
         # Gene length = longest transcript e.g with longest sum of exon length
-        length = max(
-            [
-                sum([len(exon) for exon in transcript.exons])
-                for transcript in gene.transcripts
-            ]
-        )
+        length = max([sum([len(exon) for exon in transcript.exons]) for transcript in gene.transcripts])
 
         # Create a csv row
         gene_str += f"{g_id},{g_biotype},{g_nb_tx},{length},{ext_5},{ext_3},{g_status},{g_count},{g_samples}\n"
