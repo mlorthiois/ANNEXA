@@ -2,7 +2,7 @@
 
 ## Introduction
 
-**ANNEXA** is an all-in-one reproductible pipeline, written in the [Nextflow](https://nextflow.io), which allows users to analyze LR-RNAseq sequences from Oxford Nanopore Technologies (ONT), and to reconstruct and quantify known and novel genes and isoforms. 
+**ANNEXA** is an all-in-one reproductible pipeline, written in the [Nextflow](https://nextflow.io), which allows users to analyze LR-RNAseq sequences from Oxford Nanopore Technologies (ONT), and to reconstruct and quantify known and novel genes and isoforms.
 
 More specifically, ANNEXA works by using only three parameter files (a reference genome, a reference annotation and mapping files) and provides users with an extended annotation distinguishing between novel protein-coding (mRNA) versus long non-coding RNAs (lncRNA) genes. All known and novel gene/transcript models are further characterized through multiple features (length, number of spliced transcripts, normalized expression levels,...) available as graphical outputs.
 
@@ -21,7 +21,7 @@ nextflow run mlorthiois/ANNEXA \
 
 ```sh
 nextflow run mlorthiois/ANNEXA \
-    --profile conda \
+    -profile {test,docker,singularity,conda,slurm} \
     --input samples.txt \
     --gtf /path/to/ref.gtf \
     --fa /path/to/ref.fa
@@ -38,16 +38,16 @@ The input parameter takes a file listing the bams to analyze (see example below)
 ### Options
 
 ```
---profile test       : Run annexa on toy dataset
---profile slurm      : Run annexa on slurm executor
---profile singularity: Run annexa in singularity container
---profile conda      : Run annexa in conda environment
---profile docker     : Run annexa in docker container
---input              : Path to file listing paths to bam files
---fa                 : Path to reference genome
---gtf                : Path to reference annotation
---withGeneCoverage   : Run RSeQC (can be long depending on annotation and bam sizes). False by default
---maxCpu             : max cpu threads used by ANNEXA. 8 by default
+-profile test       : Run annexa on toy dataset
+-profile slurm      : Run annexa on slurm executor
+-profile singularity: Run annexa in singularity container
+-profile conda      : Run annexa in conda environment
+-profile docker     : Run annexa in docker container
+--input             : Path to file listing paths to bam files
+--fa                : Path to reference genome
+--gtf               : Path to reference annotation
+--withGeneCoverage  : Run RSeQC (can be long depending on annotation and bam sizes). False by default
+--maxCpu            : max cpu threads used by ANNEXA. 8 by default
 ```
 
 ## Pipeline summary
@@ -62,16 +62,15 @@ This pipeline has been tested with reference annotation from Ensembl and NCBI-Re
 
 ## Filtering extended annotation
 
-At the end of the pipeline, depending on the quality report, you may want to filter some new genes. For this, ANNEXA provides a script that allows you to filter the annotation according to 2 criteria: 
+At the end of the pipeline, depending on the quality report, you may want to filter some new genes. For this, ANNEXA provides a script that allows you to filter the annotation according to 2 criteria:
 
 - The **structure of the genes** (mono-isoform and/or mono-exonic): The script allows you to filter the annotation according to whether a new gene is mono-isoform or mono-exonic. For this, the `--filterStruct` option takes as argument `Y` or `N` for each structure (isoform then exon) if you want to filter or not the structure, and the `|` (or) or `&` (and) operator.
 
-  Let's say you want to remove new genes that are mono-isoform AND mono-exon, use `--filterStruct "Y&Y"`. If you want to filter the genes that are mono-isoform OR mono-exonic, use `--filterStruct "Y|Y"`. If now you want to filter only mono-isoforms (mono-exonics), use `--filterStruct "Y&N"` (`--filterStruct "N&Y"` respectively). 
+  Let's say you want to remove new genes that are mono-isoform AND mono-exon, use `--filterStruct "Y&Y"`. If you want to filter the genes that are mono-isoform OR mono-exonic, use `--filterStruct "Y|Y"`. If now you want to filter only mono-isoforms (mono-exonics), use `--filterStruct "Y&N"` (`--filterStruct "N&Y"` respectively).
 
 - The **quantification aspect of the genes** : The script also allows you to filter the annotation according to a quantitative criterion. In the same way as for structures, the `--filterQuant` option takes as argument a number or `NA` for the minimum number of reads to keep the gene, and the number of samples expressing that gene.
 
   Let's say you want to remove new genes validated by less than 50 reads AND present in less than 5 samples, use `--filterQuant "50&7"`. If you want to filter out genes validated by less than 50 reads OR present in less than 5 samples, use `--filterQuant "50|5"`. If you now only want to filter genes validated by less than 50 reads (or only in less than 5 samples), use `--filterQuant "50&NA"` (or `--filterQuant "NA&5"` respectively)
-
 
 ### Use case
 
@@ -123,4 +122,3 @@ optional arguments:
 GTF parsing can be hard, and ANNEXA needs some informations from the input annotation. The first step is to check if the input annotation contains all the information needed.
 
 For example, your GTF should contains all the 3 levels gene -> transcript -> exon, with the attributes gene_id and transcript correctly annotated. Your gene line also have to contains a gene_biotype attributes.
-
