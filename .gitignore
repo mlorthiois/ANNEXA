@@ -7,3 +7,4 @@ work/*
 trace/*
 /*.txt
 *.stats
+Makefile

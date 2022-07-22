@@ -32,8 +32,8 @@ def parse_gene_counts(file):
 
 def get_ref_length(file):
     ref = {}
-    for record in GTF.parse_by_line(file, feature="gene"):
-        ref[record["gene_id"]] = {"start": record.start, "end": record.end}
+    for gene in GTF.parse(file):
+        ref[gene["gene_id"]] = {"start": gene.start, "end": gene.end}
     return ref
 
 
@@ -43,7 +43,9 @@ def qc_gtf(gtf, gene_counts, ref):
 
     # CSV headers
     gene_str = f"gene_id,gene_biotype,nb_transcripts,length,ext_5,ext_3,discovery,validate_by,presents_in_sample\n"
-    transcript_str = f"transcript_id,gene_id,transcript_biotype,nb_exons,length,gene_discovery,tx_discovery\n"
+    transcript_str = (
+        f"transcript_id,gene_id,transcript_biotype,nb_exons,length,gene_discovery,tx_discovery\n"
+    )
     exon_str = "exon_biotype,length,discovery\n"
 
     biotypes = set(("protein_coding", "lncRNA", "lnc_RNA"))
@@ -70,7 +72,9 @@ def qc_gtf(gtf, gene_counts, ref):
                 ext_5 = gene.end - ref_start_end[gene["gene_id"]]["end"]
 
         # Gene length = longest transcript e.g with longest sum of exon length
-        length = max([sum([len(exon) for exon in transcript.exons]) for transcript in gene.transcripts])
+        length = max(
+            [sum([len(exon) for exon in transcript.exons]) for transcript in gene.transcripts]
+        )
 
         # Create a csv row
         gene_str += f"{g_id},{g_biotype},{g_nb_tx},{length},{ext_5},{ext_3},{g_status},{g_count},{g_samples}\n"
@@ -83,7 +87,9 @@ def qc_gtf(gtf, gene_counts, ref):
             tx_length = sum([len(exon) for exon in transcript.exons])
 
             # Create csv row
-            transcript_str += f"{tx_id},{g_id},{tx_biotype},{tx_nb_exons},{tx_length},{g_status},{tx_status}\n"
+            transcript_str += (
+                f"{tx_id},{g_id},{tx_biotype},{tx_nb_exons},{tx_length},{g_status},{tx_status}\n"
+            )
 
             for exon in transcript.children:
                 ex_length = len(exon)

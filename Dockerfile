@@ -1,5 +1,7 @@
-FROM mambaorg/micromamba:0.14.0
-COPY environment.yml /tmp/environment.yml
+FROM mambaorg/micromamba:0.24.0
+
+COPY --chown=$MAMBA_USER:$MAMBA_USER environment.yml /tmp/environment.yml
+
 RUN micromamba install -y -n base -f /tmp/environment.yml && \
     micromamba clean --all --yes && rm /tmp/environment.yml && \
     # Install ps to use trace in nextflow
