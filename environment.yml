@@ -1,6 +1,10 @@
 name: base
 dependencies:
-  - conda-forge::pandas
+  - conda-forge::git
+
+  - conda-forge::python=3.10.4
+  - pytorch::pytorch=1.12.0
+  - pytorch::cpuonly
 
   - conda-forge::r-base=4.1
   - conda-forge::r-rcolorbrewer
@@ -9,3 +13,7 @@ dependencies:
   - conda-forge::r-ggpubr
   - conda-forge::r-ggridges
   - conda-forge::r-viridis
+
+  - pip
+  - pip:
+      - git+https://github.com/mlorthiois/transforkmers.git

@@ -8,3 +8,4 @@ trace/*
 /*.txt
 *.stats
 Makefile
+.DS_Store
