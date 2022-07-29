@@ -121,12 +121,18 @@ if __name__ == "__main__":
         type=argparse.FileType("r"),
         required=True,
     )
+    parser.add_argument(
+        "-prefix",
+        help="Output prefix.",
+        type=str,
+        required=True,
+    )
     args = parser.parse_args()
 
     gene, transcript, exon = qc_gtf(args.gtf, args.c_gene, args.ref)
-    with open("gene.stats", "w") as fd:
+    with open(f"{args.prefix}.gene.stats", "w") as fd:
         fd.write(gene)
-    with open("transcript.stats", "w") as fd:
+    with open(f"{args.prefix}.transcript.stats", "w") as fd:
         fd.write(transcript)
-    with open("exon.stats", "w") as fd:
+    with open(f"{args.prefix}.exon.stats", "w") as fd:
         fd.write(exon)

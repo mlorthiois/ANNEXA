@@ -1,8 +1,19 @@
 name: base
 dependencies:
+  - conda-forge::python=3.9
   - conda-forge::pandas
 
   - conda-forge::r-base=4.1
+  - bioconda::bioconductor-bambu=2.0.6
+  - bioconda::bioconductor-bsgenome
+
+  - bioconda::feelnc=0.2
+  - bioconda::bedtools=2.30
+  - bioconda::ucsc-gtftogenepred=377
+  - bioconda::ucsc-genepredtobed=377
+  - bioconda::samtools=1.15.1
+  - bioconda::rseqc=4.0
+
   - conda-forge::r-rcolorbrewer
   - conda-forge::r-tidyverse
   - conda-forge::r-reshape2

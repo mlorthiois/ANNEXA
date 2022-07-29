@@ -4,6 +4,8 @@
 
 **ANNEXA** is an all-in-one reproductible pipeline, written in the [Nextflow](https://nextflow.io), which allows users to analyze LR-RNAseq sequences from Oxford Nanopore Technologies (ONT), and to reconstruct and quantify known and novel genes and isoforms.
 
+![Metro map](./assets/metro_map.png)
+
 More specifically, ANNEXA works by using only three parameter files (a reference genome, a reference annotation and mapping files) and provides users with an extended annotation distinguishing between novel protein-coding (mRNA) versus long non-coding RNAs (lncRNA) genes. All known and novel gene/transcript models are further characterized through multiple features (length, number of spliced transcripts, normalized expression levels,...) available as graphical outputs.
 
 ## Usage
@@ -119,6 +121,5 @@ optional arguments:
 
 ## Troubleshooting
 
-GTF parsing can be hard, and ANNEXA needs some informations from the input annotation. The first step is to check if the input annotation contains all the information needed.
-
-For example, your GTF should contains all the 3 levels gene -> transcript -> exon, with the attributes gene_id and transcript correctly annotated. Your gene line also have to contains a gene_biotype attributes.
+GTF parsing can be hard, and ANNEXA needs some informations from the input annotation.
+The first step is to check if the input annotation contains all the information needed.
