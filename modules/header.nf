@@ -17,8 +17,13 @@ ${c_purple}github.com/mlorthiois/ANNEXA${c_reset}
 Reference Annotation: ${params.gtf}
 Reference Genome    : ${params.fa}
 Input Samplesheet   : ${params.input}
-Tfkmers Tokenizer   : ${params.tfkmers_tokenizer}
+---
+Filtering           : ${params.filter}
 Tfkmers Model       : ${params.tfkmers_model}
+Tfkmers Tokenizer   : ${params.tfkmers_tokenizer}
+Tfkmers Threshold   : ${params.tfkmers_threshold}
+Bambu Threshold     : ${params.bambu_threshold}
+Filtering operation : ${params.operation}
 -${c_dim}-------------------------------------${c_reset}-
 """.stripIndent()
 }
