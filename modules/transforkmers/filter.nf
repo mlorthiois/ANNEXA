@@ -7,21 +7,27 @@ process FILTER {
 
   input:
   file novel
+  file counts_tx
   file tfkmers
   file bambu_ndr
 
   output:
-  path "novel.filter.gtf"
+  path "novel.filter.gtf", emit: gtf
+  path "counts_transcript.filter.txt"
+  path "counts_transcript.full.txt"
 
   """
+  cp ${counts_tx} counts_transcript.full.txt
+
   filter_gtf_ndr.py \
     --gtf ${novel} \
+    --counts_tx ${counts_tx} \
     --tfkmers ${tfkmers} \
     --bambu ${bambu_ndr} \
     --tfkmers-threshold ${params.tfkmers_threshold} \
     --bambu-threshold ${params.bambu_threshold} \
-    --operation ${params.operation} \
-  | GTF.py format \
-  > novel.filter.gtf
+    --operation ${params.operation}
+
+  GTF.py format -i unformat.novel.filter.gtf > novel.filter.gtf
   """
 }

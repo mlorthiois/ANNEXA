@@ -10,6 +10,7 @@ workflow TFKMERS {
     bambu_ndr
     tokenizer
     model
+    counts_tx
 
   main:
     EXTRACT_TSS_REGIONS(
@@ -29,10 +30,11 @@ workflow TFKMERS {
 
     FILTER(
       novel_gtf,
+      counts_tx,
       PREDICT.out,
       bambu_ndr
     )
 
   emit:
-    gtf = FILTER.out
+    gtf = FILTER.out.gtf
 }

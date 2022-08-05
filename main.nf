@@ -79,7 +79,8 @@ workflow {
   // FILTER NEW TRANSCRIPTS, AND QC ON FILTERED ANNOTATION
   ///////////////////////////////////////////////////////////////////////////
   if(params.filter) {
-    TFKMERS(MERGE_NOVEL.out, ref_fa, BAMBU.out.ndr, tokenizer, model)
+    TFKMERS(MERGE_NOVEL.out, ref_fa, BAMBU.out.ndr, 
+            tokenizer, model, BAMBU.out.tx_counts)
     QC_FILTER(samples,
               INDEX_BAM.out, 
               TFKMERS.out.gtf, 
