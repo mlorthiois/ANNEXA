@@ -1,6 +1,8 @@
 process FEELNC_CODPOT {
   conda (params.enable_conda ? "bioconda::feelnc=0.2" : null)
-  container 'quay.io/biocontainers/feelnc:0.2--pl526_0'
+  container "${ workflow.containerEngine == 'singularity' ? 
+                'https://depot.galaxyproject.org/singularity/feelnc:0.2--pl526_0' : 
+                'quay.io/biocontainers/feelnc:0.2--pl526_0' }"
   memory params.maxMemory
 
   input:

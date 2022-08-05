@@ -10,13 +10,16 @@ else { exit 1, "Reference annotation file not specified!" }
 if (params.fa) { ref_fa = file(params.fa, checkIfExists: true) }
 else { exit 1, "Reference genome file not specified!" }
 
-if (params.tfkmers_tokenizer) {
-  tokenizer = Channel.fromPath(params.tfkmers_tokenizer, checkIfExists: true)
-} else { exit 1, "Please specify a valid transforkmers tokenizer path."}
 
-if (params.tfkmers_model) {
-  model = Channel.fromPath(params.tfkmers_model, checkIfExists: true)
-} else { exit 1, "Please specify a valid transforkmers model path."}
+if (params.filter) {
+  if (params.tfkmers_model) {
+    model = Channel.fromPath(params.tfkmers_model, checkIfExists: true)
+  } else { exit 1, "Please specify a valid transforkmers model path."}
+
+  if (params.tfkmers_tokenizer) {
+    tokenizer = Channel.fromPath(params.tfkmers_tokenizer, checkIfExists: true)
+  } else { exit 1, "Please specify a valid transforkmers tokenizer path."}
+}
 
 include { logHeader           } from './modules/header.nf'
 log.info logHeader(params)

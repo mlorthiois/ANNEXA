@@ -1,6 +1,8 @@
 process BAMBU {
   conda (params.enable_conda ? "bioconda::bioconductor-bambu=2.0.6" : null)
-  container 'quay.io/biocontainers/bioconductor-bambu:2.0.6--r41h619a076_0'
+  container "${ workflow.containerEngine == 'singularity' ? 
+                'https://depot.galaxyproject.org/singularity/bioconductor-bambu:2.0.6--r41h619a076_0' : 
+                'quay.io/biocontainers/bioconductor-bambu:2.0.6--r41h619a076_0' }"
   publishDir "$params.outdir/bambu", mode: 'copy'
   cpus params.maxCpu
   memory params.maxMemory
