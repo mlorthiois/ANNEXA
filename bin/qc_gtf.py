@@ -83,7 +83,7 @@ def qc_gtf(gtf, gene_counts, ref):
             tx_id = transcript["transcript_id"]
             tx_biotype = transcript["transcript_biotype"]
             tx_status = "novel" if tx_id.startswith("tx.") else "known"
-            tx_nb_exons = len(transcript.children)
+            tx_nb_exons = len(transcript.exons)
             tx_length = sum([len(exon) for exon in transcript.exons])
 
             # Create csv row
