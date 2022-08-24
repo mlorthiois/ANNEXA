@@ -57,7 +57,6 @@ Required:
 --fa                : Path to reference genome.
 --gtf               : Path to reference annotation.
 
-
 Optional:
 -profile test       : Run annexa on toy dataset.
 -profile slurm      : Run annexa on slurm executor.
